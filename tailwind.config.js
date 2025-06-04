@@ -7,8 +7,21 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
+  safelist: [
+    'animate-blink-slow',
+    'animate-blink-fast',
+    'animate-pulse',
+    'animate-fadeIn',
+    'star'
+  ],
   theme: {
     extend: {
+      colors: {
+        border: "var(--border)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        ring: "var(--ring)",
+      },
       keyframes: {
         "blink-slow": {
           '0%, 100%': { opacity: '1' },
@@ -35,11 +48,21 @@ module.exports = {
       },
       animation: {
         'blink-slow': 'blink-slow 3s ease-in-out infinite',
-        'blink-fast': 'blink-fast 4s ease-in-out infinite',
+        'blink-fast': 'blink-fast 1.5s ease-in-out infinite',
         'pulse': 'pulse 2s ease-in-out infinite',
         'fadeIn': 'fadeIn 1s ease-in-out forwards',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addComponents }) {
+      addComponents({
+        '.star': {
+          'text-shadow': '0 0 15px rgba(255, 255, 0, 0.9), 0 0 25px rgba(255, 255, 0, 0.6)',
+          'filter': 'drop-shadow(0 0 8px rgba(255, 255, 0, 0.7))',
+          'z-index': '10'
+        }
+      })
+    }
+  ],
 }

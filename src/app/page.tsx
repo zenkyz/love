@@ -18,11 +18,17 @@ E eu te espero,
 sempre que o céu disser que é hora.`;
 
 // Generate deterministic star positions to avoid hydration mismatch
-const starPositions = Array.from({ length: 30 }, (_, i) => ({
-  top: Math.round((i * 3.33 + Math.sin(i) * 20) * 100) / 100,
-  left: Math.round((i * 3.33 + Math.cos(i) * 30) * 100) / 100,
-  delay: Math.round(i * 0.15 * 100) / 100,
-}));
+const starPositions = Array.from({ length: 40 }, (_, i) => {
+  const angle = (i / 40) * Math.PI * 2;
+  const radius = 30 + (i % 3) * 15;
+  return {
+    top: Math.round((Math.sin(angle) * radius + 50) * 100) / 100,
+    left: Math.round((Math.cos(angle) * radius + 50) * 100) / 100,
+    opacity: (0.6 + (i % 5) * 0.08).toFixed(2),
+    duration: 2 + (i % 4),
+    scale: 0.8 + (i % 3) * 0.2,
+  };
+});
 
 export default function Home() {
   const [showSurprise, setShowSurprise] = useState(false);
@@ -51,6 +57,7 @@ export default function Home() {
   };
 
   const handleStarClick = () => {
+    console.log('Star clicked!');
     setShowSurprise(true);
     setShowExtraStars(true);
     unmuteAudio();
@@ -68,41 +75,48 @@ export default function Home() {
       {starPositions.map((pos, i) => (
         <span
           key={i}
-          className={`absolute text-2xl animate-${i % 2 ? "blink-slow" : "blink-fast"}`}
+          className="absolute text-4xl text-yellow-300 star"
           style={{
             top: `${pos.top}vh`,
             left: `${pos.left}vw`,
-            animationDelay: `${pos.delay}s`,
+            animation: `${i % 2 ? 'blink-slow' : 'blink-fast'} ${pos.duration}s ease-in-out infinite`,
+            opacity: pos.opacity,
+            transform: `translate(-50%, -50%) scale(${pos.scale})`,
           }}
           aria-hidden="true"
         >
-          {i % 2 === 0 ? "⭐" : "✨"}
+          ⭐
         </span>
       ))}
 
       {/* Main content */}
-      <main className="max-w-4xl mx-auto px-4 py-8 relative z-10 flex flex-col items-center text-center">
+      <main className="container max-w-4xl mx-auto px-4 py-4 relative z-10 flex flex-col items-center text-center min-h-screen justify-between">
         <h1 className="text-4xl md:text-5xl font-bold mb-8 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
           Do Sol pra minha querida Lua
         </h1>
 
-        <Image
-          src="https://i.imgur.com/HkCwsmp.jpg"
-          alt="Foto do casal"
-          width={800}
-          height={600}
-          style={{ width: "auto", height: "auto" }}
-          className="rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.4)] mb-8"
-          priority
-        />
+        <div className="w-full max-w-[600px] aspect-[3/2] relative mb-8">
+          <Image
+            src="https://i.imgur.com/HkCwsmp.jpg"
+            alt="Foto do casal"
+            fill
+            sizes="(max-width: 600px) 100vw, 600px"
+            className="rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.4)] object-cover"
+            priority
+          />
+        </div>
 
-        <div className="my-12">
+        <div className="my-8 relative z-20 flex flex-col items-center">
+          <p className="text-xl mb-6 text-yellow-100 animate-pulse">Clique na estrela para ver a surpresa ✨</p>
           <button
             onClick={handleStarClick}
-            className="text-6xl animate-pulse hover:scale-125 transition-transform duration-300 bg-transparent border-none cursor-pointer drop-shadow-[0_0_5px_rgba(255,255,255,1)] hover:drop-shadow-[0_0_15px_rgba(255,255,255,1)] focus:outline-none focus:ring-4 focus:ring-white rounded"
+            className="group relative p-16 bg-transparent border-none cursor-pointer rounded-full hover:bg-yellow-500/10 transition-colors"
             aria-label="Mostrar seção surpresa"
           >
-            ⭐
+            <div className="absolute inset-0 animate-ping opacity-75 text-8xl text-yellow-300 star flex items-center justify-center pointer-events-none">⭐</div>
+            <span className="text-8xl relative animate-pulse group-hover:scale-125 transition-transform duration-300 text-yellow-300 star group-hover:text-yellow-200 block">
+              ⭐
+            </span>
           </button>
         </div>
 
@@ -133,10 +147,15 @@ export default function Home() {
                 {[...Array(20)].map((_, i) => (
                   <span
                     key={i}
-                    className={`text-2xl animate-${i % 2 ? "blink-slow" : "blink-fast"}`}
+                    className="text-4xl text-yellow-300 star"
+                    style={{
+                      animation: `${i % 2 ? 'blink-slow' : 'blink-fast'} ${2 + (i % 3)}s ease-in-out infinite`,
+                      opacity: (0.5 + (i % 5) * 0.1).toFixed(2),
+                      transform: `translate(-50%, -50%) scale(${0.8 + (i % 3) * 0.2})`,
+                    }}
                     aria-hidden="true"
                   >
-                    {i % 2 === 0 ? "⭐" : "✨"}
+                    ⭐
                   </span>
                 ))}
               </div>
