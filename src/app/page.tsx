@@ -175,7 +175,7 @@ export default function Home() {
       </main>
 
       <footer className="text-center text-white/50 mt-12 mb-6 text-sm">
-        Feito com ❤️ por Zenky
+        Feito com ❤️
       </footer>
     </div>
   );
